@@ -33,10 +33,10 @@ function camera:centerOn(x, y)
   end
 
   if _height < _mapHeight * _scale then
-    _transformationY = math.floor((-y * _scale) + (_height/2))/_scale
+    _transformationY = (-y /2)/_scale
     if _transformationY > 0 then
       _transformationY = 0
-    elseif _transformationY < ((_mapHeight * _scale)  - (_height)) then
+    elseif _transformationY < -((_mapHeight * _scale)  - (_height))/_scale then
       _transformationY = (_height / _scale) - _mapHeight
     end
   else
@@ -77,7 +77,7 @@ function camera:draw()
   local bx, by = _transformationX, _transformationY
   for _, v in ipairs(_layers) do
     _transformationX = bx * v.scale
-    _transformationY = by * v.scale
+    --_transformationY = by * v.scale
     self:set()
     v.draw()
     self:unset()

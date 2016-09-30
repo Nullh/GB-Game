@@ -30,10 +30,6 @@ function love.load()
   blockingObj = map:getMapObjectLayer(collider, 'blocking')
   myWorld = world:new(map, collider, 500)
 
-  mountains = love.graphics.newImage('assets/mountains.png')
-  background = love.graphics.newImage('assets/background.png')
-  foreground = love.graphics.newImage('assets/closebg.png')
-
   myCamera = camera:new(map:getWidth(), map:getHeight(), 0, 4)
   myCamera:newLayer(-3, 0, function()
     love.graphics.setColor(256, 256, 256)
