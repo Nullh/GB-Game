@@ -90,7 +90,7 @@ function love.update(dt)
   end
 
   myPlayer:update(dt, spaceReleased)
-  allBaddies:update(dt)
+  allBaddies:update(dt, map:getHeight())
   myCamera:centerOn(myPlayer:getX(), myPlayer:getY())
   TEsound.cleanup()
 end

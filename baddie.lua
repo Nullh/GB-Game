@@ -4,16 +4,18 @@ require 'TEsound'
 
 baddie = class('baddie')
 
-function baddie:initialize(x, y, speed, collider, g)
+function baddie:initialize(x, y, speed, collider, g, builder)
   self._sprite = love.graphics.newImage('assets/Baddie.png')
   self._spriteWidth = 8
   self._spriteHeight = 8
   self._x = x
   self._y = y
+  self._builder = builder
   self._yVelocity = 0
   self._xVelocity = 0
   self._speed = speed
   self._g = g
+  self._dead = false
   self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight)
   self._grid = anim8.newGrid(self._spriteWidth, self._spriteHeight, self._sprite:getWidth(), self._sprite:getHeight())
   self._animations = {}
@@ -25,7 +27,7 @@ function baddie:initialize(x, y, speed, collider, g)
 end
 
 
-function baddie:update(dt)
+function baddie:update(dt, fallLimit)
 
   self._moving = true
   self._facingRight = false
@@ -35,18 +37,24 @@ function baddie:update(dt)
   self._y = self._y + self._yVelocity
   self._collObj:moveTo(self._x, self._y)
   for shape, delta in pairs(collider:collisions(self._collObj)) do
-    self._x = self._x + delta.x
-    self._y = self._y + delta.y
-    if delta.y < 0 then
-      self._yVelocity = 0
-    end
-    if delta.x < 0 then
-      self._xVelocity = 0
-      self._moving = false
+    if shape.type ~= 'bounds' then
+      self._x = self._x + delta.x
+      self._y = self._y + delta.y
+      if delta.y < 0 then
+        self._yVelocity = 0
+      end
+      if delta.x < 0 then
+        self._xVelocity = 0
+        self._moving = false
+      end
     end
   end
-
   self._collObj:moveTo(self._x, self._y)
+  if self._y > fallLimit then
+    self:kill()
+  end
+
+
   -- update the animations
   self._animations['walkLeft']:update(dt)
   self._animations['walkRight']:update(dt)
@@ -55,6 +63,7 @@ function baddie:update(dt)
 end
 
 function baddie:draw()
+
   -- draw the player
   if self._moving == true then
     if self._facingRight == true then
@@ -85,4 +94,18 @@ end
 
 function baddie:getY()
   return self._y
+end
+
+function baddie:kill()
+--  collider:remove(self._collObj)
+  self._dead = true
+  self._builder:removeSelf()
+end
+
+function baddie:isDead()
+  return self._dead
+end
+
+function baddie:removeCollObj()
+  collider:remove(self._collObj)
 end

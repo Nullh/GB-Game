@@ -12,9 +12,13 @@ function world:initialize(map, collider, gravity)
 
   -- add walls at screen edge
   self._leftBorder = collider:rectangle(-10, -10, 10, self._height + 20)
+  self._leftBorder.type = 'bounds'
   self._rightBorder = collider:rectangle(self._width, -10, 10, self._height + 20)
+  self._rightBorder.type = 'bounds'
   self._botBorder = collider:rectangle(-10, self._height, self._width + 20, 10)
+  self._botBorder.type = 'bounds'
   self._topBorder = collider:rectangle(-10, -10, self._width + 20, 10)
+  self._topBorder.type = 'bounds'
 
   self._muted = false
 
