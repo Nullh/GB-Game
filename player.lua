@@ -28,9 +28,9 @@ local _jumpSound
 
 
 function player:initialize(x, y, speed, jumpSpeed, jumpHeight, jumpTimer, collider, g)
-  _sprite = love.graphics.newImage('assets/Some guy new pallette.png')
-  _spriteWidth = 32
-  _spriteHeight = 48
+  _sprite = love.graphics.newImage('assets/Squiddy.png')
+  _spriteWidth = 8
+  _spriteHeight = 8
   _x = x
   _y = y
   _speed = speed
@@ -40,12 +40,12 @@ function player:initialize(x, y, speed, jumpSpeed, jumpHeight, jumpTimer, collid
   _jumpTimerMax = jumpTimer
   _g = g
   _collObj = collider:rectangle(_x, _y, _spriteWidth, _spriteHeight)
-  _grid = anim8.newGrid(_spriteWidth, _spriteHeight, _sprite:getWidth(), _sprite:getHeight())
-  _animations['walkLeft'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
-  _animations['walkRight'] = anim8.newAnimation(_grid(1, 1), 0.2)
-  _animations['idleLeft'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
-  _animations['idleRight'] = anim8.newAnimation(_grid(1, 1), 0.2)
-  --_jumpSound = love.sound.newSoundData('assets/bark.mp3')
+  _grid = anim8.newGrid(8, 8, _sprite:getWidth(), _sprite:getHeight())
+  _animations['walkLeft'] = anim8.newAnimation(_grid(1, 1), 0.2)
+  _animations['walkRight'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
+  _animations['idleLeft'] = anim8.newAnimation(_grid(1, 1), 0.2)
+  _animations['idleRight'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
+  _jumpSound = love.sound.newSoundData('assets/bark.mp3')
 end
 
 function player:getX()
@@ -115,7 +115,7 @@ end
 function player:jump()
   if _canBark and _canJump then
     _canBark = false
-    --TEsound.play(_jumpSound, 'jump', 1, 1, flipCanBark)
+    TEsound.play(_jumpSound, 'jump', 1, 1, flipCanBark)
   end
   _jumping = true
 end
