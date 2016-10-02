@@ -24,7 +24,7 @@ end
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest',0)
   gravity = 10
-  map = mapLoader:new('maps/map4.lua', 'assets/Blocks 8x8.png')
+  map = mapLoader:new('maps/map4.lua', 'assets/Blocks 8x8 new pallette.png')
   collider = HC.new(300)
   myPlayer = player:new(10, 30, 50, 60, 3, 0.5, collider, gravity)
   blockingObj = map:getMapObjectLayer(collider, 'blocking')
