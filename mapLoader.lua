@@ -92,31 +92,31 @@ function mapLoader:draw(minLayer, maxLayer)
 end -- drawMap()
 
 -- get objects from a named object layer
-function mapLoader:getMapObjectLayer(collider, blockingLayerString)
-  local collisionTileTable = {}
-  local blockinglayer = nil
+function mapLoader:getMapObjectLayer(collider, layerString)
+  local tileTable = {}
+  local matchLayer = nil
   local row = 1
   local column = 1
 
   for i=1, table.getn(_file.layers) do
-    if _file.layers[i].name == blockingLayerString then
+    if _file.layers[i].name == layerString then
       -- find the blocking layer
-      blockinglayer = i
+      matchLayer = i
     end
   end
 
   -- draw each blocking object
-  for i=1, table.getn(_file.layers[blockinglayer].objects) do
-    if _file.layers[blockinglayer].objects[i].shape == "rectangle" then
-      table.insert(collisionTileTable, collider:rectangle(_file.layers[blockinglayer].objects[i].x, _file.layers[blockinglayer].objects[i].y,
-          _file.layers[blockinglayer].objects[i].width, _file.layers[blockinglayer].objects[i].height))
-      collisionTileTable[table.getn(collisionTileTable)].name = blockingLayerString
-    elseif _file.layers[blockinglayer].objects[i].shape == "ellipse" then
-      table.insert(collisionTileTable, collider:circle(_file.layers[blockinglayer].objects[i].x + (_file.layers[blockinglayer].objects[i].width/2),
-          _file.layers[blockinglayer].objects[i].y + (_file.layers[blockinglayer].objects[i].width/2),
-          _file.layers[blockinglayer].objects[i].width/2))
-      collisionTileTable[table.getn(collisionTileTable)].name = blockingLayerString
+  for i=1, table.getn(_file.layers[matchLayer].objects) do
+    if _file.layers[matchLayer].objects[i].shape == "rectangle" then
+      table.insert(tileTable, collider:rectangle(_file.layers[matchLayer].objects[i].x, _file.layers[matchLayer].objects[i].y,
+          _file.layers[matchLayer].objects[i].width, _file.layers[matchLayer].objects[i].height))
+      tileTable[table.getn(tileTable)].name = layerString
+    elseif _file.layers[matchLayer].objects[i].shape == "ellipse" then
+      table.insert(tileTable, collider:circle(_file.layers[matchLayer].objects[i].x + (_file.layers[matchLayer].objects[i].width/2),
+          _file.layers[matchLayer].objects[i].y + (_file.layers[matchLayer].objects[i].width/2),
+          _file.layers[matchLayer].objects[i].width/2))
+      tileTable[table.getn(tileTable)].name = layerString
     end
   end
-  return collisionTileTable
+  return tileTable
 end -- getMapObjectLayer()

@@ -4,8 +4,10 @@ require 'player'
 require 'camera'
 require 'world'
 require 'TEsound'
+require 'baddie'
+require 'baddiebuilder'
 
-debug = false
+debug = true
 local blockingObj = {}
 local spaceReleased = true
 
@@ -28,6 +30,7 @@ function love.load()
   collider = HC.new(300)
   myPlayer = player:new(10, 30, 50, 60, 3, 0.5, collider, gravity)
   blockingObj = map:getMapObjectLayer(collider, 'blocking')
+  allBaddies = baddiebuilder:new(map:getMapObjectLayer(collider, 'enemies'), collider, gravity)
   myWorld = world:new(map, collider, 500)
 
   myCamera = camera:new(map:getWidth(), map:getHeight(), 0, 4)
@@ -42,6 +45,7 @@ function love.load()
   myCamera:newLayer(-1,1.0, function()
     love.graphics.setColor(255, 255, 255)
     myPlayer:draw()
+    allBaddies:draw()
   end)
   myCamera:newLayer(0, 1.0, function()
     love.graphics.setColor(255, 255, 255)
@@ -85,6 +89,7 @@ function love.update(dt)
   end
 
   myPlayer:update(dt, spaceReleased)
+  allBaddies:update(dt)
   myCamera:centerOn(myPlayer:getX(), myPlayer:getY())
   TEsound.cleanup()
 end
@@ -94,8 +99,7 @@ function love.draw()
   myCamera:draw()
 
   if debug == true then
-    love.graphics.print(map:getWidth(),10,50)
-    love.graphics.print(map:getHeight(),10,60)
+    love.graphics.print(myPlayer:getX()..','..myPlayer:getY(),10,10)
 
   end
 end
