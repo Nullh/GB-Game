@@ -29,8 +29,9 @@ function love.load()
   map = mapLoader:new('maps/map4.lua', 'assets/Blocks 8x8.png')
   collider = HC.new(300)
   myPlayer = player:new(10, 30, 50, 60, 3, 0.5, collider, gravity)
-  blockingObj = map:getMapObjectLayer(collider, 'blocking')
-  allBaddies = baddiebuilder:new(map:getMapObjectLayer(collider, 'enemies'), collider, gravity)
+  blockingObj = map:createBlockingObjFromLayer(collider, 'blocking')
+  allBaddies = baddiebuilder:new(map:getObjectsFromLayer('enemies'), collider, gravity)
+  bad1 = baddie:new(60, 60, 10, collider, gravity)
   myWorld = world:new(map, collider, 500)
 
   myCamera = camera:new(map:getWidth(), map:getHeight(), 0, 4)
@@ -100,6 +101,6 @@ function love.draw()
 
   if debug == true then
     love.graphics.print(myPlayer:getX()..','..myPlayer:getY(),10,10)
-
+    love.graphics.print(allBaddies:getBadInfo(), 10, 20)
   end
 end

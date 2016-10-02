@@ -4,34 +4,33 @@ require 'baddie'
 
 baddiebuilder = class('baddiebuilder')
 
-local _baddiesTable = {}
 
 function baddiebuilder:initialize(mapObjects, collider, gravity)
+  self._baddiesTable = {}
   for i, bad in ipairs(mapObjects) do
-    local x
-    local y
-    x, y = bad:center()
-    table.insert(_baddiesTable, baddie:new(x, y, 30, collider, gravity))
+    --local x, y = bad:center()
+    table.insert(self._baddiesTable, baddie:new(bad['x'], bad['y'], 30, collider, gravity))
+    --table.insert(self._baddiesTable, baddie:new(100, 50*i , 30, collider, gravity))
   end
+  --table.insert(self._baddiesTable, baddie:new(50,50,30,collider,gravity))
 end
 
 function baddiebuilder:draw()
-  for i, bad in ipairs(_baddiesTable) do
+  for i, bad in ipairs(self._baddiesTable) do
     bad:draw()
   end
 end
 
 function baddiebuilder:update(dt)
-  for i, bad in ipairs(_baddiesTable) do
+  for i, bad in ipairs(self._baddiesTable) do
     bad:update(dt)
   end
 end
 
 function baddiebuilder:getBadInfo()
-  local test = {}
-
-  for i, obj in ipairs(_baddiesTable) do
-    table.insert(test, obj:getCoords())
+  local test = table.getn(self._baddiesTable)
+  for i, obj in ipairs(self._baddiesTable) do
+    test = test..'\n'..obj:getX()..','..obj:getY()
   end
   return test
 end

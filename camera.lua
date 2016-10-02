@@ -2,71 +2,65 @@ local class = require 'middleclass'
 
 camera = class('camera')
 
-local _width = nil
-local _height = nil
-local _transformationX = nil
-local _transformationY = nil
-local _mapWidth
-local _mapHeight
-local _rotation
-local _layers = {}
-
 function camera:initialize(mapWidth, mapHeight, rotation, scale)
-  _width = love.graphics.getWidth()
-  _height = love.graphics.getHeight()
-  _mapWidth = mapWidth
-  _mapHeight = mapHeight
-  _rotation = rotation
-  _scale = scale
+  self._width = love.graphics.getWidth()
+  self._height = love.graphics.getHeight()
+  self._mapWidth = mapWidth
+  self._mapHeight = mapHeight
+  self._rotation = rotation
+  self._scale = scale
+  self._layers = {}
+  self._transformationX = nil
+  self._transformationY = nil
 end
 
 function camera:centerOn(x, y)
-  if _width  < _mapWidth*_scale then
-    _transformationX = math.floor((-x * _scale) + (_width /2))/_scale
-    if _transformationX > 0 then
-      _transformationX = 0
-    elseif _transformationX < ((_mapWidth)  - (_width)) then
-      _transformationX = (_mapWidth - _width)
+  if self._width  < self._mapWidth*self._scale then
+    self._transformationX = math.floor((-x * self._scale) + (self._width /2))/self._scale
+    if self._transformationX > 0 then
+      self._transformationX = 0
+    elseif self._transformationX < ((self._mapWidth)  - (self._width)) then
+      self._transformationX = (self._mapWidth - self._width)
     end
   else
-    _transformationX = ((_width / _scale) - _mapWidth)/2
+    self._transformationX = ((self._width / self._scale) - self._mapWidth)/2
   end
 
-  if _height < _mapHeight * _scale then
-    _transformationY = (-y /2)/_scale
-    if _transformationY > 0 then
-      _transformationY = 0
-    elseif _transformationY < -((_mapHeight * _scale)  - (_height))/_scale then
-      _transformationY = (_height / _scale) - _mapHeight
+  if self._height < self._mapHeight * self._scale then
+    self._transformationY = (-y /2)/self._scale
+    if self._transformationY > 0 then
+      self._transformationY = 0
+    elseif self._transformationY < -((self._mapHeight * self._scale)  - (self._height))/self._scale then
+      self._transformationY = (self._height / self._scale) - self._mapHeight
     end
   else
-    _transformationY = ((_height / _scale) - _mapHeight)/2
+    self._transformationY = ((self._height / self._scale) - self._mapHeight)/2
   end
 
-  --if _height  < _mapHeight*_scale  then
-  --  _transformationY = math.floor(-y/_scale + ((_height/_scale) /2))
-  --  if _transformationY > 0 then
-  --    _transformationY = 0
-  --  elseif _transformationY < -((_mapHeight/_scale)  - (_height/_scale)) then
-  --    _transformationY = -((_mapHeight/_scale)  - (_height/_scale))
+  --if self._height  < self._mapHeight*self._scale  then
+  --  self._transformationY = math.floor(-y/self._scale + ((self._height/self._scale) /2))
+  --  if self._transformationY > 0 then
+  --    self._transformationY = 0
+  --  elseif self._transformationY < -((self._mapHeight/self._scale)  - (self._height/self._scale)) then
+  --    self._transformationY = -((self._mapHeight/self._scale)  - (self._height/self._scale))
   --  end
   --else
-  --  _transformationY = ((_height/_scale)  - (_mapHeight/_scale))/2
+  --  self._transformationY = ((self._height/self._scale)  - (self._mapHeight/self._scale))/2
   --end
 end
 
 function camera:newLayer(order, scale, func)
   local newLayer = {draw = func, scale = scale, order = order}
-  table.insert(_layers, newLayer)
-  table.sort(_layers, function(a,b) return a.order < b.order end)
+  table.insert(self._layers, newLayer)
+  table.sort(self._layers, function(a,b) return a.order < b.order end)
   return newLayer
 end
 
 function camera:set()
   love.graphics.push()
-  love.graphics.rotate(-_rotation)
-  love.graphics.scale(_scale, _scale)
-  love.graphics.translate(_transformationX, _transformationY)
+  love.graphics.rotate(-self._rotation)
+  love.graphics.scale(self._scale, self._scale)
+  love.graphics.translate(self._transformationX, self._transformationY)
 end
 
 function camera:unset()
@@ -74,17 +68,17 @@ function camera:unset()
 end
 
 function camera:draw()
-  local bx, by = _transformationX, _transformationY
-  for _, v in ipairs(_layers) do
-    _transformationX = bx * v.scale
-    --_transformationY = by * v.scale
+  local bx, by = self._transformationX, self._transformationY
+  for i, v in ipairs(self._layers) do
+    self._transformationX = bx * v.scale
+    --self._transformationY = by * v.scale
     self:set()
     v.draw()
     self:unset()
   end
-  _transformationX, _transformationY = bx, by
+  self._transformationX, self._transformationY = bx, by
 end
 
 function camera:getScale()
-  return _scale
+  return self._scale
 end

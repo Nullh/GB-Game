@@ -4,194 +4,179 @@ require 'TEsound'
 
 player = class('player')
 
-local _speed
-local _collObj
-local _x
-local _y
-local _sprite
-local _spriteWidth
-local _spriteHeight
-local _jumpSpeed
-local _onGround = false
-local _yVelocity = 0
-local _g
-local _jumpTimer
-local _jumpTimerMax
-local _canJump = true
-local _jumping = false
-local _grid
-local _animations = {}
-local _facingRight = true
-local _moving = false
-local _canBark = true
-local _jumpSound
-
-
 function player:initialize(x, y, speed, jumpSpeed, jumpHeight, jumpTimer, collider, g)
-  _sprite = love.graphics.newImage('assets/Squiddy.png')
-  _spriteWidth = 8
-  _spriteHeight = 8
-  _x = x
-  _y = y
-  _speed = speed
-  _jumpSpeed = jumpSpeed
-  _jumpHeight = -jumpHeight
-  _jumpTimer = jumpTimer
-  _jumpTimerMax = jumpTimer
-  _g = g
-  _collObj = collider:rectangle(_x, _y, _spriteWidth, _spriteHeight)
-  _grid = anim8.newGrid(8, 8, _sprite:getWidth(), _sprite:getHeight())
-  _animations['walkLeft'] = anim8.newAnimation(_grid(1, 1), 0.2)
-  _animations['walkRight'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
-  _animations['idleLeft'] = anim8.newAnimation(_grid(1, 1), 0.2)
-  _animations['idleRight'] = anim8.newAnimation(_grid(1, 1), 0.2):flipH()
-  _jumpSound = love.sound.newSoundData('assets/bark.mp3')
+  self._animations = {}
+  self._sprite = love.graphics.newImage('assets/Squiddy.png')
+  self._spriteWidth = 8
+  self._spriteHeight = 8
+  self._x = x
+  self._y = y
+  self._speed = speed
+  self._jumpSpeed = jumpSpeed
+  self._jumpHeight = -jumpHeight
+  self._jumpTimer = jumpTimer
+  self._jumpTimerMax = jumpTimer
+  self._canJump = true
+  self._jumping = false
+  self._onGround = false
+  self._yVelocity = 0
+  self._facingRight = true
+  self._moving = false
+  self._canBark = true
+  self._g = g
+  self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight)
+  self._grid = anim8.newGrid(8, 8, self._sprite:getWidth(), self._sprite:getHeight())
+  self._animations['walkLeft'] = anim8.newAnimation(self._grid(1, 1), 0.2)
+  self._animations['walkRight'] = anim8.newAnimation(self._grid(1, 1), 0.2):flipH()
+  self._animations['idleLeft'] = anim8.newAnimation(self._grid(1, 1), 0.2)
+  self._animations['idleRight'] = anim8.newAnimation(self._grid(1, 1), 0.2):flipH()
+  self._jumpSound = love.sound.newSoundData('assets/bark.mp3')
 end
 
 function player:getX()
-  return _x
+  return self._x
 end
 
 function player:setX(x)
-  _x = x
-  _collObj:moveTo(_x, _y)
+  self._x = x
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:getY()
-  return _y
+  return self._y
 end
 
 function player:setY(y)
-  _y = y
-  _collObj:moveTo(_x, _y)
+  self._y = y
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:setCoords(x, y)
-  _y = y
-  _x = x
-  _collObj:moveTo(_x, _y)
+  self._y = y
+  self._x = x
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:moveLeft(dt)
-  _moving = true
-  _facingRight = false
-  _x = _x - (_speed * dt)
-  _collObj:moveTo(_x, _y)
+  self._moving = true
+  self._facingRight = false
+  self._x = self._x - (self._speed * dt)
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:moveRight(dt)
-  _moving = true
-  _facingRight = true
-  _x = _x + (_speed * dt)
-  _collObj:moveTo(_x, _y)
+  self._moving = true
+  self._facingRight = true
+  self._x = self._x + (self._speed * dt)
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:moveUp(dt)
-  _y = _y - (_speed * dt)
-  _collObj:moveTo(_x, _y)
+  self._y = self._y - (self._speed * dt)
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:moveDown(dt)
-  _y = _y + (_speed * dt)
-  _collObj:moveTo(_x, _y)
+  self._y = self._y + (self._speed * dt)
+  self._collObj:moveTo(self._x, self._y)
 end
 
 function player:setSpeed(newSpeed)
-  _speed = newSpeed
+  self._speed = newSpeed
 end
 
 function player:getCollObj()
-  return _collObj
+  return self._collObj
 end
 
 function player:getJumpTimer()
-  return _jumpTimer
+  return self._jumpTimer
 end
 
-local function flipCanBark()
-  _canBark = true
+function player:flipCanBark()
+  self._canBark = true
 end
 
 function player:jump()
-  if _canBark and _canJump then
-    _canBark = false
-    TEsound.play(_jumpSound, 'jump', 1, 1, flipCanBark)
+  if self._canBark and self._canJump then
+    self._canBark = false
+    TEsound.play(self._jumpSound, 'jump', 1, 1, self:flipCanBark())
   end
-  _jumping = true
+  self._jumping = true
 end
 
 function player:update(dt, spaceReleased)
   -- if we're jumping accelerate the player up
-  if _jumping then
+  if self._jumping then
 
-    if _jumpTimer > 0 and _canJump == true then
-      _yVelocity = _yVelocity - _jumpSpeed * (dt / (_jumpTimerMax*5))
+    if self._jumpTimer > 0 and self._canJump == true then
+      self._yVelocity = self._yVelocity - self._jumpSpeed * (dt / (self._jumpTimerMax*5))
       if spaceReleased == true then
-        _jumpTimer = -1
+        self._jumpTimer = -1
       end
-      if _yVelocity < _jumpHeight then
-        _yVelocity = _jumpHeight
-        _canJump = false
+      if self._yVelocity < self._jumpHeight then
+        self._yVelocity = self._jumpHeight
+        self._canJump = false
       end
-      _jumpTimer = _jumpTimer - dt
-      _collObj:moveTo(_x, _y)
+      self._jumpTimer = self._jumpTimer - dt
+      self._collObj:moveTo(self._x, self._y)
     end
   end
   -- have gravity affect the player
-  _yVelocity = _yVelocity + (_g * dt)
-  _y = _y + _yVelocity
-  if _yVelocity > 0 then
-    _canJump = false
+  self._yVelocity = self._yVelocity + (self._g * dt)
+  self._y = self._y + self._yVelocity
+  if self._yVelocity > 0 then
+    self._canJump = false
   end
-  _collObj:moveTo(_x, _y)
-  for shape, delta in pairs(collider:collisions(_collObj)) do
-    _x = _x + delta.x
-    _y = _y + delta.y
+  self._collObj:moveTo(self._x, self._y)
+  for shape, delta in pairs(collider:collisions(self._collObj)) do
+    self._x = self._x + delta.x
+    self._y = self._y + delta.y
     if delta.y < 0 then
-      _yVelocity = 0
-      _jumpTimer = _jumpTimerMax
+      self._yVelocity = 0
+      self._jumpTimer = self._jumpTimerMax
       if spaceReleased then
-        _canJump = true
-        _jumping = false
+        self._canJump = true
+        self._jumping = false
       end
     elseif delta.y > 0 then
-      _yVelocity = 0.1
-      _canJump = false
+      self._yVelocity = 0.1
+      self._canJump = false
     end
   end
-  _collObj:moveTo(_x, _y)
+  self._collObj:moveTo(self._x, self._y)
   -- update the animations
-  _animations['walkLeft']:update(dt)
-  _animations['walkRight']:update(dt)
-  _animations['idleLeft']:update(dt)
-  _animations['idleRight']:update(dt)
+  self._animations['walkLeft']:update(dt)
+  self._animations['walkRight']:update(dt)
+  self._animations['idleLeft']:update(dt)
+  self._animations['idleRight']:update(dt)
 end
 
 function player:getYVelocity()
-  return _yVelocity
+  return self._yVelocity
 end
 
 function player:draw()
   -- draw the player
-  if _moving == true then
-    if _facingRight == true then
-      _animations['walkRight']:draw(_sprite, _x-(_spriteWidth/2), _y-(_spriteHeight/2))
+  if self._moving == true then
+    if self._facingRight == true then
+      self._animations['walkRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
     else
-      _animations['walkLeft']:draw(_sprite, _x-(_spriteWidth/2), _y-(_spriteHeight/2))
+      self._animations['walkLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
     end
   else
-    if _facingRight == true then
-      _animations['idleRight']:draw(_sprite, _x-(_spriteWidth/2), _y-(_spriteHeight/2))
+    if self._facingRight == true then
+      self._animations['idleRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
     else
-      _animations['idleLeft']:draw(_sprite, _x-(_spriteWidth/2), _y-(_spriteHeight/2))
+      self._animations['idleLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
     end
   end
   -- if debug draw the collision object
   if debug == true then
     love.graphics.setColor(100, 100, 100, 150)
-    _collObj:draw('fill')
+    self._collObj:draw('fill')
     love.graphics.setColor(256, 256, 256)
   end
   -- reset the moving flag
-  _moving = false
+  self._moving = false
 end
