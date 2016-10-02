@@ -8,7 +8,7 @@ return {
   height = 20,
   tilewidth = 8,
   tileheight = 8,
-  nextobjectid = 8,
+  nextobjectid = 12,
   properties = {},
   tilesets = {
     {
@@ -238,6 +238,44 @@ return {
           y = 7.85827,
           width = 31.7903,
           height = 8.30476,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "enemies",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      draworder = "topdown",
+      properties = {},
+      objects = {
+        {
+          id = 8,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 152.884,
+          y = 110.29,
+          width = 5.29755,
+          height = 3.88487,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 10,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 155.748,
+          y = 66.3959,
+          width = 3.17853,
+          height = 3.17853,
           rotation = 0,
           visible = true,
           properties = {}
