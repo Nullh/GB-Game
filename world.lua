@@ -3,40 +3,31 @@ require 'TEsound'
 
 world = class('world')
 
-local _collider
-local _gravity
-local _map
-local _width
-local _height
-local _leftBorder
-local _rightBorder
-local _botBorder
-local _topBorder
-local _muted = false
-
 function world:initialize(map, collider, gravity)
-  _map = map
-  _collider = collider
-  _gravity = gravity
-  _width = map:getWidth()
-  _height = map:getHeight()
+  self._map = map
+  self._collider = collider
+  self._gravity = gravity
+  self._width = map:getWidth()
+  self._height = map:getHeight()
 
   -- add walls at screen edge
-  _leftBorder = collider:rectangle(-10, -10, 10, _height + 20)
-  _rightBorder = collider:rectangle(_width, -10, 10, _height + 20)
-  _botBorder = collider:rectangle(-10, _height, _width + 20, 10)
-  _topBorder = collider:rectangle(-10, -10, _width + 20, 10)
+  self._leftBorder = collider:rectangle(-10, -10, 10, self._height + 20)
+  self._rightBorder = collider:rectangle(self._width, -10, 10, self._height + 20)
+  self._botBorder = collider:rectangle(-10, self._height, self._width + 20, 10)
+  self._topBorder = collider:rectangle(-10, -10, self._width + 20, 10)
 
-  --TEsound.playLooping('assets/MSTR_-_MSTR_-_Choro_bavario_Loop.ogg', 'bgm')
+  self._muted = false
+
+  --TEsound.playLooping('assets/MSTRself._-self._MSTRself._-self._Choroself._bavarioself._Loop.ogg', 'bgm')
 end
 
 function world:mute()
-  if _muted == false then
+  if self._muted == false then
     TEsound.pause('bgm')
-    _muted = true
+    self._muted = true
   else
     TEsound.resume('bgm')
-    _muted = false
+    self._muted = false
   end
 end
 
