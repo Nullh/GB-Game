@@ -16,6 +16,7 @@ function baddie:initialize(x, y, speed, collider, g, builder)
   self._speed = speed
   self._g = g
   self._dead = false
+  self._facingRight = false
   self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight)
   self._grid = anim8.newGrid(self._spriteWidth, self._spriteHeight, self._sprite:getWidth(), self._sprite:getHeight())
   self._animations = {}
@@ -30,8 +31,12 @@ end
 function baddie:update(dt, fallLimit)
 
   self._moving = true
-  self._facingRight = false
-  self._x = self._x - (self._speed * dt)
+
+  if self._facingRight then
+    self._x = self._x + (self._speed * dt)
+  else
+    self._x = self._x - (self._speed * dt)
+  end
 
   self._yVelocity = self._yVelocity + (self._g * dt)
   self._y = self._y + self._yVelocity
@@ -43,9 +48,12 @@ function baddie:update(dt, fallLimit)
       if delta.y < 0 then
         self._yVelocity = 0
       end
-      if delta.x < 0 then
-        self._xVelocity = 0
-        self._moving = false
+      if delta.x ~= 0 then
+        if self._facingRight then
+          self._facingRight = false
+        else
+          self._facingRight = true
+        end
       end
     end
   end
