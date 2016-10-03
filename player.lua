@@ -159,6 +159,7 @@ function player:update(dt, spaceReleased)
      and self._y + (self._spriteHeight/2) <= uy then
        allBaddies:kill(shape.id)
        self._yVelocity = -2.5
+       self._canJump = false
     end
   end
   self._collObj:moveTo(self._x, self._y)

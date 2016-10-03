@@ -1,8 +1,8 @@
 -- Colours
--- #212103
--- #63631F
--- #B5B570
--- #F0F0D7
+-- #ced2a1 - 206, 210, 161
+-- #a9af70 - 169, 175, 112
+-- #585e20 - 88, 94, 32
+-- #2c3106 - 44, 49, 6
 
 local HC = require 'HC'
 require 'mapLoader'
@@ -13,7 +13,7 @@ require 'TEsound'
 require 'baddie'
 require 'baddiebuilder'
 
-debug = true
+debug = false
 local blockingObj = {}
 local spaceReleased = true
 
