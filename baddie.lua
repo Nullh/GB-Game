@@ -4,12 +4,13 @@ require 'TEsound'
 
 baddie = class('baddie')
 
-function baddie:initialize(x, y, speed, collider, g, builder)
+function baddie:initialize(x, y, speed, collider, g, id)
   self._sprite = love.graphics.newImage('assets/Baddie.png')
   self._spriteWidth = 8
   self._spriteHeight = 8
   self._x = x
   self._y = y
+  self._id = id
   self._builder = builder
   self._yVelocity = 0
   self._xVelocity = 0
@@ -19,6 +20,7 @@ function baddie:initialize(x, y, speed, collider, g, builder)
   self._facingRight = false
   self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight-1)
   self._collObj.type = 'enemy'
+  self._collObj.id = self._id
   self._grid = anim8.newGrid(self._spriteWidth, self._spriteHeight, self._sprite:getWidth(), self._sprite:getHeight())
   self._animations = {}
   self._animations['walkLeft'] = anim8.newAnimation(self._grid(1, 1), 0.2)
@@ -117,4 +119,8 @@ end
 
 function baddie:removeCollObj()
   collider:remove(self._collObj)
+end
+
+function baddie:getId()
+  return self._id
 end
