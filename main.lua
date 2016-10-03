@@ -1,3 +1,9 @@
+-- Colours
+-- #212103
+-- #63631F
+-- #B5B570
+-- #F0F0D7
+
 local HC = require 'HC'
 require 'mapLoader'
 require 'player'
@@ -7,7 +13,7 @@ require 'TEsound'
 require 'baddie'
 require 'baddiebuilder'
 
-debug = true
+debug = false
 local blockingObj = {}
 local spaceReleased = true
 
@@ -92,15 +98,22 @@ function love.update(dt)
   myPlayer:update(dt, spaceReleased)
   allBaddies:update(dt, map:getHeight())
   myCamera:centerOn(myPlayer:getX(), myPlayer:getY())
+
   TEsound.cleanup()
 end
 
 function love.draw()
 
   myCamera:draw()
-
+  myPlayer:drawLives(love.graphics.getWidth()-50,10)
+  if myPlayer:isDead() then
+    love.graphics.printf("Game Over!", (love.graphics.getWidth()/2)-300, love.graphics.getHeight()/2, 100, 'center', 0, 3, 3)
+    love.graphics.setColor(100, 100, 100, 150)
+    love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  end
   if debug == true then
     love.graphics.print(myPlayer:getX()..','..myPlayer:getY(),10,10)
-    love.graphics.print(allBaddies:getBadInfo(), 10, 20)
+    --love.graphics.print(allBaddies:getBadInfo(), 10, 20)
+    love.graphics.print(myPlayer._invulnTimer, 10, 20)
   end
 end

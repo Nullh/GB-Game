@@ -23,8 +23,14 @@ function player:initialize(x, y, speed, jumpSpeed, jumpHeight, jumpTimer, collid
   self._facingRight = true
   self._moving = false
   self._canBark = true
+  self._lives = 3
+  self._dead = false
+  self._isFlashFrame = false
+  self._invulnTimerMax = 3
+  self._invulnTimer = 0
   self._g = g
   self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight)
+  self._collObj.type = 'player'
   self._grid = anim8.newGrid(8, 8, self._sprite:getWidth(), self._sprite:getHeight())
   self._animations['walkLeft'] = anim8.newAnimation(self._grid(1, 1), 0.2)
   self._animations['walkRight'] = anim8.newAnimation(self._grid(1, 1), 0.2):flipH()
@@ -132,6 +138,10 @@ function player:update(dt, spaceReleased)
   for shape, delta in pairs(collider:collisions(self._collObj)) do
     self._x = self._x + delta.x
     self._y = self._y + delta.y
+    if shape.type == 'enemy' and self._invulnTimer <= 0 then
+      self:getHit()
+      self._invulnTimer = self._invulnTimerMax
+    end
     if delta.y < 0 then
       self._yVelocity = 0
       self._jumpTimer = self._jumpTimerMax
@@ -145,11 +155,25 @@ function player:update(dt, spaceReleased)
     end
   end
   self._collObj:moveTo(self._x, self._y)
+  -- decrement the invulnerability timer
+  if self._invulnTimer > 0 then
+    self._invulnTimer = self._invulnTimer - dt
+  end
   -- update the animations
   self._animations['walkLeft']:update(dt)
   self._animations['walkRight']:update(dt)
   self._animations['idleLeft']:update(dt)
   self._animations['idleRight']:update(dt)
+
+  if self._invulnTimer > 0 then
+    if self._isFlashFrame then
+      self._isFlashFrame = false
+    else
+      self._isFlashFrame = true
+    end
+  else
+    self._isFlashFrame = false
+  end
 end
 
 function player:getYVelocity()
@@ -157,18 +181,20 @@ function player:getYVelocity()
 end
 
 function player:draw()
-  -- draw the player
-  if self._moving == true then
-    if self._facingRight == true then
-      self._animations['walkRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+  if not self._isFlashFrame then
+    -- draw the player
+    if self._moving == true then
+      if self._facingRight == true then
+        self._animations['walkRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+      else
+        self._animations['walkLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+      end
     else
-      self._animations['walkLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
-    end
-  else
-    if self._facingRight == true then
-      self._animations['idleRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
-    else
-      self._animations['idleLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+      if self._facingRight == true then
+        self._animations['idleRight']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+      else
+        self._animations['idleLeft']:draw(self._sprite, self._x-(self._spriteWidth/2), self._y-(self._spriteHeight/2))
+      end
     end
   end
   -- if debug draw the collision object
@@ -179,4 +205,21 @@ function player:draw()
   end
   -- reset the moving flag
   self._moving = false
+end
+
+function player:drawLives(x, y)
+  love.graphics.setColor(240, 240, 215)
+  love.graphics.print('Lives: '..self._lives, x, y)
+  love.graphics.setColor(256, 256, 256)
+end
+
+function player:getHit()
+  self._lives = self._lives - 1
+  if self._lives <= 0 then
+    self._dead = true
+  end
+end
+
+function player:isDead()
+  return self._dead
 end
