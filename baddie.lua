@@ -17,7 +17,7 @@ function baddie:initialize(x, y, speed, collider, g, builder)
   self._g = g
   self._dead = false
   self._facingRight = false
-  self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight)
+  self._collObj = collider:rectangle(self._x, self._y, self._spriteWidth, self._spriteHeight-1)
   self._collObj.type = 'enemy'
   self._grid = anim8.newGrid(self._spriteWidth, self._spriteHeight, self._sprite:getWidth(), self._sprite:getHeight())
   self._animations = {}

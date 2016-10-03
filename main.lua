@@ -13,7 +13,7 @@ require 'TEsound'
 require 'baddie'
 require 'baddiebuilder'
 
-debug = false
+debug = true
 local blockingObj = {}
 local spaceReleased = true
 
@@ -64,16 +64,6 @@ function love.load()
       end
     end
   end)
---  myCamera:newLayer(-5, 0.3, function()
-  --  love.graphics.setColor(256, 256, 256)
-  --  --map:draw(1, 1)
-  --  love.graphics.draw(mountains)
-  --end)
-  --myCamera:newLayer(-10, 0, function()
-  --  love.graphics.setColor(256, 256, 256)
-  --  --map:draw(1, 1)
-  --  love.graphics.draw(background)
-  --end)
 
 end
 
@@ -105,14 +95,13 @@ end
 function love.draw()
 
   myCamera:draw()
-  myPlayer:drawLives(love.graphics.getWidth()-50,10)
+
   if myPlayer:isDead() then
     love.graphics.printf("Game Over!", (love.graphics.getWidth()/2)-300, love.graphics.getHeight()/2, 100, 'center', 0, 3, 3)
     love.graphics.setColor(100, 100, 100, 150)
     love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
   end
   if debug == true then
-    love.graphics.print(myPlayer:getX()..','..myPlayer:getY(),10,10)
     --love.graphics.print(allBaddies:getBadInfo(), 10, 20)
     love.graphics.print(myPlayer._invulnTimer, 10, 20)
   end

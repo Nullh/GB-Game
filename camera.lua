@@ -77,6 +77,10 @@ function camera:draw()
     self:unset()
   end
   self._transformationX, self._transformationY = bx, by
+  -- draw lives remaining
+  love.graphics.setColor(240, 240, 215)
+  love.graphics.print('Lives: '..myPlayer:getLives(), love.graphics.getWidth()-(50*self._scale), 10, 0, self._scale, self._scale)
+  love.graphics.setColor(256, 256, 256)
 end
 
 function camera:getScale()

@@ -207,14 +207,19 @@ function player:draw()
   self._moving = false
 end
 
-function player:drawLives(x, y)
-  love.graphics.setColor(240, 240, 215)
-  love.graphics.print('Lives: '..self._lives, x, y)
-  love.graphics.setColor(256, 256, 256)
+function player:getLives()
+  return self._lives
 end
 
 function player:getHit()
   self._lives = self._lives - 1
+  if self._facingRight then
+    self._x = self._x - 5
+    self._y = self._y - 5
+  else
+    self._x = self._x + 5
+    self._y = self._y - 5
+  end
   if self._lives <= 0 then
     self._dead = true
   end
