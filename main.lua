@@ -34,9 +34,9 @@ function love.load()
   gravity = 10
   map = mapLoader:new('maps/map4.lua', 'assets/Blocks 8x8.png')
   collider = HC.new(300)
-  myPlayer = player:new(10, 30, 50, 60, 3, 0.5, collider, gravity)
   blockingObj = map:createBlockingObjFromLayer(collider, 'blocking')
   allBaddies = baddiebuilder:new(map:getObjectsFromLayer('enemies'), collider, gravity)
+  myPlayer = player:new(10, 30, 50, 60, 3, 0.5, collider, gravity)
   bad1 = baddie:new(60, 60, 10, collider, gravity)
   myWorld = world:new(map, collider, 500)
 
@@ -102,7 +102,7 @@ function love.draw()
     love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
   end
   if debug == true then
-    --love.graphics.print(allBaddies:getBadInfo(), 10, 20)
-    love.graphics.print(myPlayer._invulnTimer, 10, 20)
+    love.graphics.print(allBaddies:getBadInfo(), 10, 20)
+    --love.graphics.print(myPlayer._invulnTimer, 10, 20)
   end
 end

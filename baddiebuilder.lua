@@ -9,7 +9,8 @@ function baddiebuilder:initialize(mapObjects, collider, gravity)
   self._baddiesTable = {}
   for i, bad in ipairs(mapObjects) do
     --local x, y = bad:center()
-    local obj = baddie:new(bad['x'], bad['y'], 30, collider, gravity, self)
+    local id = 'b'..i
+    local obj = baddie:new(bad['x'], bad['y'], 30, collider, gravity, id)
     --self._baddiesTable[obj] = obj
     table.insert(self._baddiesTable, obj)
     --table.insert(self._baddiesTable, baddie:new(100, 50*i , 30, collider, gravity))
@@ -42,6 +43,25 @@ function baddiebuilder:removeSelf()
     if bad:isDead() then
       table.remove(self._baddiesTable, i)
       bad:removeCollObj()
+    end
+  end
+end
+
+function baddiebuilder:getIdByCollObj(collObj)
+  local id
+  for i, bad in ipairs(self._baddiesTable) do
+    if collObj == bad:getCollObj() then
+      id = i
+    end
+  end
+  return i
+end
+
+function baddiebuilder:kill(id)
+  for i, bad in ipairs(self._baddiesTable) do
+    if bad:getId() == id then
+      self._baddiesTable[i]:removeCollObj()
+      table.remove(self._baddiesTable, i)
     end
   end
 end

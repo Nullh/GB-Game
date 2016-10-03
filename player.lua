@@ -138,10 +138,6 @@ function player:update(dt, spaceReleased)
   for shape, delta in pairs(collider:collisions(self._collObj)) do
     self._x = self._x + delta.x
     self._y = self._y + delta.y
-    if shape.type == 'enemy' and self._invulnTimer <= 0 then
-      self:getHit()
-      self._invulnTimer = self._invulnTimerMax
-    end
     if delta.y < 0 then
       self._yVelocity = 0
       self._jumpTimer = self._jumpTimerMax
@@ -152,6 +148,17 @@ function player:update(dt, spaceReleased)
     elseif delta.y > 0 then
       self._yVelocity = 0.1
       self._canJump = false
+    end
+    local ux, uy, lx, ly = shape:bbox()
+    if shape.type == 'enemy'
+     and self._invulnTimer <= 0
+     and self._y + (self._spriteHeight/2) > uy then
+      self:getHit()
+      self._invulnTimer = self._invulnTimerMax
+    elseif shape.type == 'enemy'
+     and self._y + (self._spriteHeight/2) <= uy then
+       allBaddies:kill(shape.id)
+       self._yVelocity = -2.5
     end
   end
   self._collObj:moveTo(self._x, self._y)
@@ -214,11 +221,11 @@ end
 function player:getHit()
   self._lives = self._lives - 1
   if self._facingRight then
-    self._x = self._x - 5
-    self._y = self._y - 5
+  --  self._x = self._x - 5
+  --  self._y = self._y - 5
   else
-    self._x = self._x + 5
-    self._y = self._y - 5
+  --  self._x = self._x + 5
+  --  self._y = self._y - 5
   end
   if self._lives <= 0 then
     self._dead = true
